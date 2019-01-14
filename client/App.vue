@@ -1,47 +1,97 @@
 <template>
-  <div class="chat">
-    <h2>Chat</h2>
+<v-app>
+    <v-card
+        color="grey lighten-4"
+        flat
+        height="200px">
+        <v-toolbar
+            color="grey darken-1"
+            dark>
+            <v-toolbar-side-icon></v-toolbar-side-icon>
 
-    <input v-model="newMessage" @keyup.enter="sendMessage" placeholder="Enter new message" />
+            <v-menu :nudge-width="100">
+                <v-toolbar-title slot="activator">
+                    <span>All</span>
+                    <v-icon dark>arrow_drop_down</v-icon>
+                </v-toolbar-title>
 
-    <div v-if="!$subReady.messages">
-      Loading...
-    </div>
+                <v-list>
+                    <v-list-tile
+                        v-for="item in items"
+                        :key="item"
+                        @click="btnClick(item)">
+                        <v-list-tile-title v-text="item"></v-list-tile-title>
+                    </v-list-tile>
+                </v-list>
+            </v-menu>
 
-    <div  class="message" v-for="msg in messages" :key="msg._id">
-      {{msg.message}} | {{msg.no}} | 
-      <button @click="removeMessage(msg._id)">x</button>
-    </div>
-  </div>
+            <v-spacer></v-spacer>
+
+            <v-btn icon>
+                <v-icon>search</v-icon>
+            </v-btn>
+
+            <v-btn icon>
+                <v-icon>favorite</v-icon>
+            </v-btn>
+
+            <v-select
+                :items="branches"
+                item-text="name"
+                item-value="_id"
+                label="Select branch"
+                @change="btnChange"
+                single-line></v-select>
+        </v-toolbar>
+        <router-view></router-view>
+    </v-card>
+</v-app>
 </template>
 
 <script>
-import Messages from '/boths/items'
 export default {
-  name: 'chat',
-  data () {
-    return {
-      newMessage: '',
-      // messages: [],
+    data: () => ({
+        items: [
+            'Branch', 'Item', 'List view', 'Coworkers','Register','Login'
+        ]
+    }),
+    mounted() {
+        Meteor.call('findBranch', (err, re) => {
+            if (!err) {
+                this.$store.dispatch('setBranch', re)
+            }
+        })
+        Meteor.call('findItem', (err, re) => {
+            if (!err) {
+                this.$store.dispatch('setItem', re)
+            }
+        })
+    },
+    computed:{
+       branches() {
+            return this.$store.state.branches
+        },
+    },
+    methods: {
+       btnChange(_id) {
+           this.$store.getters.FillterbyBranch(_id)
+        },
+        btnClick(name) {
+            console.log(name);
+            if (name == 'Branch') {
+                this.$router.push('/branch')
+            } else if (name == 'Item') {
+                this.$router.push('/item')
+            } else if (name == 'Register') {
+                this.$router.push('/register')
+            } else if (name == 'Login') {
+                this.$router.push('/login')
+            } else if (name == 'List view') {
+                this.$router.push('/listview')
+            } else {
+                this.$router.push('/index')
+            }
+        }
     }
-  },
-  meteor: {
-    $subscribe: {
-      'messages': [],
-    },
-    messages() {
-      return Messages.find();
-    },
-  },
-  methods: {
-  
-    sendMessage() {
-    Meteor.call('addMessage', {message:this.newMessage,no:1});
-      this.newMessage = '';
-    },
-    removeMessage(_id) {
-      Meteor.call('removeMessage', _id);
-    },
-  },
-};
+}
 </script>
