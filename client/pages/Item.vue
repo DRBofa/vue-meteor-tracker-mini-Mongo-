@@ -3,14 +3,7 @@
     <center>
         <h1>Item</h1>
     </center>
-    <v-select
-        v-model="form.branchId"
-        :items="branches"
-        item-text="name"
-        item-value="_id"
-        label="Select branch"
-        @change="btnChange"
-        single-line></v-select>
+
     <v-text-field
         v-model="form.name"
         label="Item name"
@@ -32,8 +25,8 @@
 
     <v-btn
         color="success"
-        @click="btnAdd">Add Item</v-btn>
-    {{branches}}
+        @click="btnAdd" type="submit">Add Item</v-btn>
+    {{currentBranch}}
 </div>
 </template>
 
@@ -52,11 +45,12 @@ export default {
         }
     },
     computed: {
-        branches() {
-            return this.$store.state.branches
+        currentBranch() {
+            return this.$store.state.currentBranch
         },
     },
     methods: {
+        
         setItem() {
             Meteor.call('findItem', (err, re) => {
                 if (!err) {
@@ -69,7 +63,7 @@ export default {
         },
         btnAdd() {
             let data = {
-                branchId: this.form.branchId,
+                branchId: this.currentBranch,
                 name: this.form.name,
                 price: parseFloat(this.form.price),
                 cust: parseFloat(this.form.cust),
@@ -77,6 +71,7 @@ export default {
             }
             Meteor.call('insertItem', data, (err, re) => {
                 if (!err) {
+                    console.log(data);
                     this.setItem()
                     this.form = {
                         branchId: null,

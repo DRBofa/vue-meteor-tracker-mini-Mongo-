@@ -27,13 +27,7 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn icon>
-                <v-icon>search</v-icon>
-            </v-btn>
-
-            <v-btn icon>
-                <v-icon>favorite</v-icon>
-            </v-btn>
+          
 
             <v-select
                 :items="branches"
@@ -41,6 +35,7 @@
                 item-value="_id"
                 label="Select branch"
                 @change="btnChange"
+                value="jziCEai7wBw6HGiCr"
                 single-line></v-select>
         </v-toolbar>
         <router-view></router-view>
@@ -56,6 +51,7 @@ export default {
         ]
     }),
     mounted() {
+        
         Meteor.call('findBranch', (err, re) => {
             if (!err) {
                 this.$store.dispatch('setBranch', re)
@@ -63,17 +59,21 @@ export default {
         })
         Meteor.call('findItem', (err, re) => {
             if (!err) {
+              
                 this.$store.dispatch('setItem', re)
             }
         })
+         
     },
     computed:{
        branches() {
             return this.$store.state.branches
         },
+        
     },
     methods: {
        btnChange(_id) {
+           this.$store.dispatch('setCurrentBranch',_id)
            this.$store.getters.FillterbyBranch(_id)
         },
         btnClick(name) {
@@ -92,6 +92,6 @@ export default {
                 this.$router.push('/index')
             }
         }
-    }
+    },
 }
 </script>

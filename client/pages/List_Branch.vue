@@ -2,7 +2,7 @@
 <div>
 
     <center>
-        <h1>{{title | getBranch}} </h1>
+        <h1>{{branchId}} </h1>
     </center>
 
     <v-btn
@@ -50,13 +50,17 @@ export default {
             ],
         }
     },
-    filters: {
-        getBranch(title) {
-            console.log(this.itemlist);
-            //    this.title.forEach(doc => {
-
-            //    });
-        }
+    // filters: {
+    //     getBranch(title) {
+    //            this.title.forEach(doc => {
+    //                if(doc._id==this.branchId){
+    //                    return doc.name
+    //                }
+    //            });
+    //     }
+    // },
+    mounted(){
+    //   this.itemlist()
     },
     computed: {
         itemlist() {
@@ -64,6 +68,9 @@ export default {
         },
         title() {
             return this.$store.state.branches
+        },
+        branchId() {
+            return this.$store.state.currentBranch
         },
         // count() {
         //     return this.$store.getters.getItemByBranch('vd2ksaLLWCjRyfx7E')

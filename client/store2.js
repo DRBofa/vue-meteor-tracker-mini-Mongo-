@@ -4,6 +4,7 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
+    currentBranch:'jziCEai7wBw6HGiCr',
     branches: [],
     items: [],
     itemlist:[],
@@ -20,17 +21,20 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
-    // getBranch (state) {     
-
-    // },
+    
+   
     // setItemlist(state,data){
     //   return state.itemlist=data
     // },
     setItem(state,data){
-      return state.items=data
+       state.items=data
+      store.getters.FillterbyBranch(state.currentBranch)
     },
       setBranch(state,data){
         return state.branches=data
+      },
+      SET_CURRENTBRANCH(state,data){
+        return state.currentBranch=data
       }
   },
   actions: {
@@ -38,14 +42,15 @@ export const store = new Vuex.Store({
         
         context.commit('setBranch',data)
       },
-    setItem(context,data){
+    setCurrentBranch(context,data){
         
-        context.commit('setItem',data)
+        context.commit('SET_CURRENTBRANCH',data)
       },
-    // FillterbyBranch(id){
-    //   console.log('Action '+id);
-    //    store.getters.FillterbyBranch(id)
-    //   },
-    
-  }
+    setItem(context,data){
+      context.commit('setItem',data)
+      
+      },
+   
+      
+    }
 })
